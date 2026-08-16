@@ -103,6 +103,19 @@ elif mode == "vite-alias":
     text = text[:idx] + "\n" + alias_line + text[idx:]
     open(file, "w").write(text)
     print(f"  alias agregado a {file}")
+elif mode == "tailwind-content":
+    marker = 'content: ['
+    rel_entry = f"{payload}/src/**/*.{{ts,tsx}}"
+    if rel_entry in text:
+        print("  content ya presente, omito")
+        sys.exit(0)
+    if marker not in text:
+        print("  no se encontro content: en tailwind.config — agregar manual")
+        sys.exit(0)
+    idx = text.index(marker) + len(marker)
+    text = text[:idx] + f'\n    "{rel_entry}",' + text[idx:]
+    open(file, "w").write(text)
+    print(f"  content agregado a {file}")
 PY
 }
 
@@ -122,6 +135,11 @@ install_shell() {
   rel="$(python3 -c "import os,sys; print(os.path.relpath(sys.argv[1], sys.argv[2]))" "$SHELL_PATH" "$web")"
   python_patch tsconfig-paths "$ts_conf" "$rel"
   python_patch vite-alias "$vite_conf" "$rel"
+  if [ -f "$web/tailwind.config.ts" ]; then
+    python_patch tailwind-content "$web/tailwind.config.ts" "$rel"
+  else
+    warn "$web/tailwind.config.ts no existe — agrega el path del shell al content de tailwind"
+  fi
   step "npm: instalando peer deps del shell"
   [ "$DRY_RUN" = 1 ] && return 0
   (cd "$web" && npm install react react-dom clsx tailwind-merge lucide-react leaflet react-leaflet sonner @tanstack/react-query --no-audit --no-fund) \
