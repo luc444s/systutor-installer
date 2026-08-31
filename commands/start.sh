@@ -69,6 +69,7 @@ PKGJSON
   # Agregar scripts al package.json raíz
   _add_npm_script "$root_pkg" "frontend" "cd $WEB_DIR && npm run dev"
   _add_npm_script "$root_pkg" "services" "cd vendor/systutor-core && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
+  _add_npm_script "$root_pkg" "db" "cd vendor/systutor-core && alembic upgrade head"
   _add_npm_script "$root_pkg" "dev" "npm run services & npm run frontend"
   _add_npm_script "$root_pkg" "typecheck" "cd $WEB_DIR && npx tsc --noEmit"
 

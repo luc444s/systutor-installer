@@ -4,12 +4,15 @@
 # ── Repos ────────────────────────────────────────────────────────────────────
 CORE_URL="${SYSTUTOR_CORE_URL:-https://github.com/luc444s/systutor-core.git}"
 SHELL_URL="${SYSTUTOR_SHELL_URL:-https://github.com/luc444s/systutor-shell.git}"
+THEMES_URL="${SYSTUTOR_THEMES_URL:-https://github.com/luc444s/systutor-themes.git}"
 DOTFILES_URL="${SYSTUTOR_DOTFILES_URL:-https://github.com/luc444s/dotfiles.git}"
 ADD_URL="${SYSTUTOR_ADD_URL:-https://github.com/luc444s/atomic-driven-development.git}"
+DASHBOARD_URL="${SYSTUTOR_DASHBOARD_URL:-https://github.com/luc444s/systutor-dashboard-shell.git}"
 
 # ── Paths dentro del proyecto ────────────────────────────────────────────────
 CORE_PATH="vendor/systutor-core"
 SHELL_PATH="vendor/systutor-shell"
+THEMES_PATH="vendor/systutor-themes"
 DOTFILES_PATH="/tmp/systutor-dotfiles"
 ADD_PATH="vendor/atomic-driven-development"
 
