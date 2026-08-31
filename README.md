@@ -1,46 +1,90 @@
 # systutor-installer
 
-Installer de SYSTUTOR: monta el kernel (`systutor-core`) y el frontend core (`systutor-shell`) en un proyecto nuevo o existente.
+CLI para instalar tu set de programación completo: herramientas de desarrollo, systutor (core + shell) y dotfiles.
 
-**Portable**: Linux x86, ARM y Termux (Android). Solo requiere `git`, `python3`, `pip` y `npm`.
+**Portable**: Linux x86/ARM, macOS, Termux (Android). Sin dependencias GNU.
 
-## Uso
+## Instalación rápida
 
 ```bash
-# ejecutar SIEMPRE con bash explicito (compatible Termux y linux)
-bash install.sh /ruta/al/proyecto
+git clone https://github.com/luc444s/systutor-installer.git
+cd systutor-installer
+bash install.sh all          # instala todo
 ```
+
+## Comandos
+
+```bash
+./install.sh systutor [ruta]     # instalar systutor-core + systutor-shell
+./install.sh tools               # instalar tools de dev (perfil dev)
+./install.sh tools --profile full # instalar tools full
+./install.sh dotfiles install    # instalar configuraciones de shell
+./install.sh all                 # instalar todo junto
+./install.sh diag                # diagnostico del entorno
+```
+
+## Herramientas
+
+```bash
+./install.sh tools --list                    # ver tools disponibles
+./install.sh tools --only docker git jq      # instalar tools específicas
+./install.sh --dry-run tools --profile full  # preview sin ejecutar
+```
+
+### Perfiles
+
+| Perfil | Tools |
+|--------|-------|
+| `dev` | git, python3, pip, node, npm, curl, wget, build-essential, jq, tree, unzip |
+| `full` | dev + docker, docker-compose, htop, zellij, tmux |
+| `minimal` | git, python3, pip, node, npm, curl |
+
+## Systutor
 
 Dentro de un repo git:
 
 ```bash
-./install.sh                          # kernel + shell
-./install.sh --core                   # solo kernel
-./install.sh --shell                  # solo shell
-./install.sh --web-dir frontend       # web dir distinto de apps/web
-./install.sh --check-arch             # diagnostico del entorno
-./install.sh --dry-run                # imprime sin ejecutar
+./install.sh systutor                    # kernel + shell
+./install.sh systutor --core             # solo kernel
+./install.sh systutor --shell            # solo shell
+./install.sh systutor --web-dir frontend # web dir custom
 ```
 
-## Que hace
-
+Qué hace:
 1. `git submodule add` de `systutor-core` y `systutor-shell` en `vendor/`
-2. Kernel: `pip install -e vendor/systutor-core` (paquete real, importable como `systutor.*`)
-3. Shell: inyecta alias `@systutor/shell` en `vite.config.ts` + `paths` en `tsconfig.json` (ruta relativa calculada segun profundidad del web dir)
+2. Kernel: `pip install -e vendor/systutor-core`
+3. Shell: inyecta alias `@systutor/shell` en vite + paths en tsconfig
 4. Instala peer deps npm del shell
-5. Imprime pins de submodules al final
 
-Idempotente: volver a correr no duplica configuracion.
+## Dotfiles
+
+```bash
+./install.sh dotfiles install   # clonar e instalar
+./install.sh dotfiles update    # actualizar configs
+./install.sh dotfiles list      # ver archivos incluidos
+```
+
+## Opciones globales
+
+| Flag | Descripción |
+|------|-------------|
+| `--dry-run` | Mostrar qué se haría sin ejecutar |
+| `--force` | No pedir confirmaciones |
+| `--verbose` | Salida detallada |
+
+## Variables de entorno
+
+```bash
+SYSTUTOR_CORE_URL=https://...     # URL custom del repo core
+SYSTUTOR_SHELL_URL=https://...    # URL custom del repo shell
+SYSTUTOR_DOTFILES_URL=https://... # URL custom del repo dotfiles
+```
 
 ## Termux (Android)
 
-Termux usa **bionic**, no glibc — no se instala glibc. La unica dependencia C del stack (`asyncpg`, kernel) compila de fuente contra bionic:
-
 ```bash
-pkg install clang postgresql
+pkg install clang postgresql    # para compilar asyncpg
 ```
-
-`install.sh --check-arch` detecta Termux y avisa si faltan.
 
 ## Licencia
 
