@@ -1,6 +1,6 @@
 # systutor-installer
 
-CLI para instalar tu set de programación completo: herramientas de desarrollo, systutor (core + shell) y dotfiles.
+CLI para instalar tu set de programación completo: herramientas de desarrollo, systutor (core + shell), ADD y dotfiles.
 
 **Portable**: Linux x86/ARM, macOS, Termux (Android). Sin dependencias GNU.
 
@@ -15,12 +15,13 @@ bash install.sh all          # instala todo
 ## Comandos
 
 ```bash
-./install.sh systutor [ruta]     # instalar systutor-core + systutor-shell
-./install.sh tools               # instalar tools de dev (perfil dev)
-./install.sh tools --profile full # instalar tools full
-./install.sh dotfiles install    # instalar configuraciones de shell
-./install.sh all                 # instalar todo junto
-./install.sh diag                # diagnostico del entorno
+./install.sh systutor [ruta]        # instalar systutor-core + systutor-shell
+./install.sh add [install|list]     # instalar Atomic-Driven-Development
+./install.sh tools                  # instalar tools de dev (perfil dev)
+./install.sh tools --profile full   # instalar tools full
+./install.sh dotfiles install       # instalar configuraciones de shell
+./install.sh all                    # instalar todo junto
+./install.sh diag                   # diagnostico del entorno
 ```
 
 ## Herramientas
@@ -56,6 +57,19 @@ Qué hace:
 3. Shell: inyecta alias `@systutor/shell` en vite + paths en tsconfig
 4. Instala peer deps npm del shell
 
+## ADD (Atomic-Driven-Development)
+
+Dentro de un repo git:
+
+```bash
+./install.sh add install   # clona ADD en vendor/
+./install.sh add update    # actualiza ADD
+./install.sh add skills    # lista skills disponibles
+./install.sh add list      # ver skills
+```
+
+Skills incluidos: atomizer-add, ci-wrapper-add, composer-gate-add, extreme-poverty-add, gitflow-full-add, gitflow-lite-add, verify-binding-add.
+
 ## Dotfiles
 
 ```bash
@@ -78,6 +92,7 @@ Qué hace:
 SYSTUTOR_CORE_URL=https://...     # URL custom del repo core
 SYSTUTOR_SHELL_URL=https://...    # URL custom del repo shell
 SYSTUTOR_DOTFILES_URL=https://... # URL custom del repo dotfiles
+SYSTUTOR_ADD_URL=https://...      # URL custom del repo ADD
 ```
 
 ## Termux (Android)

@@ -1,6 +1,6 @@
 #!/bin/bash
 # install.sh — systutor-installer CLI v2.0
-# Instala tu set de programación completo: tools, systutor, dotfiles.
+# Instala tu set de programación completo: tools, systutor, dotfiles, ADD.
 #
 # Uso:
 #   bash install.sh <comando> [opciones]
@@ -8,6 +8,7 @@
 #
 # Comandos:
 #   systutor    Instalar systutor-core + systutor-shell
+#   add         Instalar Atomic-Driven-Development (ADD)
 #   tools       Instalar herramientas de desarrollo
 #   dotfiles    Instalar configuraciones de shell
 #   all         Instalar todo
@@ -31,6 +32,8 @@ source "$SCRIPT_DIR/commands/systutor.sh"
 source "$SCRIPT_DIR/commands/tools.sh"
 # shellcheck source=commands/dotfiles.sh
 source "$SCRIPT_DIR/commands/dotfiles.sh"
+# shellcheck source=commands/add.sh
+source "$SCRIPT_DIR/commands/add.sh"
 
 # ── Diagnóstico ─────────────────────────────────────────────────────────────
 cmd_diag() {
@@ -88,11 +91,12 @@ cmd_all() {
   cmd_tools "$@"
   cmd_dotfiles install
 
-  # systutor solo si estamos en un repo git
+  # systutor + add solo si estamos en un repo git
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     cmd_systutor "$@"
+    cmd_add install
   else
-    warn "No estás en un repo git — omitiendo systutor"
+    warn "No estás en un repo git — omitiendo systutor y add"
     info "  Entrá a tu proyecto y ejecutá: ./install.sh systutor"
   fi
 
@@ -114,11 +118,13 @@ Uso: install.sh <comando> [opciones]
 Comandos:
   systutor [--core|--shell] [--web-dir DIR] [RUTA]
                          Instalar systutor-core + systutor-shell
+  add [install|update|list|skills] [RUTA]
+                         Instalar Atomic-Driven-Development (ADD)
   tools [--profile NAME] [--list] [--only tool...]
                          Instalar herramientas de desarrollo
   dotfiles [install|update|list]
                          Instalar/actualizar configuraciones de shell
-  all [opciones]         Instalar todo (tools + dotfiles + systutor)
+  all [opciones]         Instalar todo (tools + dotfiles + systutor + add)
   diag                   Diagnóstico del entorno
 
 Opciones globales:
@@ -137,6 +143,8 @@ Ejemplos:
   ./install.sh tools --profile full         # instala tools full
   ./install.sh tools --only docker git      # instala solo docker y git
   ./install.sh systutor /mi/proyecto        # monta systutor en un repo
+  ./install.sh add /mi/proyecto             # clona ADD en un repo
+  ./install.sh add skills                   # ver skills disponibles
   ./install.sh dotfiles update              # actualiza dotfiles
   ./install.sh diag                         # ver entorno actual
 
@@ -144,6 +152,7 @@ Variables de entorno:
   SYSTUTOR_CORE_URL     URL del repo core (default: GitHub)
   SYSTUTOR_SHELL_URL    URL del repo shell
   SYSTUTOR_DOTFILES_URL URL del repo dotfiles
+  SYSTUTOR_ADD_URL      URL del repo ADD
 
 Soportado: Linux x86_64/aarch64, macOS, Termux (Android)
 EOF
@@ -177,6 +186,7 @@ main() {
 
   case "$cmd" in
     systutor)  cmd_systutor "${cmd_args[@]}" ;;
+    add)       cmd_add "${cmd_args[@]}" ;;
     tools)     cmd_tools "${cmd_args[@]}" ;;
     dotfiles)  cmd_dotfiles "${cmd_args[@]}" ;;
     all)       cmd_all "${cmd_args[@]}" ;;
