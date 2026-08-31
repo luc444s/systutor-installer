@@ -9,6 +9,7 @@
 # Comandos:
 #   systutor    Instalar systutor-core + systutor-shell
 #   add         Instalar Atomic-Driven-Development (ADD)
+#   start       Configurar y arrancar frontend + backend
 #   tools       Instalar herramientas de desarrollo
 #   dotfiles    Instalar configuraciones de shell
 #   all         Instalar todo
@@ -34,6 +35,8 @@ source "$SCRIPT_DIR/commands/tools.sh"
 source "$SCRIPT_DIR/commands/dotfiles.sh"
 # shellcheck source=commands/add.sh
 source "$SCRIPT_DIR/commands/add.sh"
+# shellcheck source=commands/start.sh
+source "$SCRIPT_DIR/commands/start.sh"
 
 # ── Diagnóstico ─────────────────────────────────────────────────────────────
 cmd_diag() {
@@ -92,10 +95,11 @@ cmd_all() {
   cmd_tools "$@"
   cmd_dotfiles install
 
-  # systutor + add solo si estamos en un repo git
+  # systutor + add + start solo si estamos en un repo git
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     cmd_systutor "$@"
     cmd_add install
+    cmd_start setup
   else
     warn "No estás en un repo git — omitiendo systutor y add"
     info "  Entrá a tu proyecto y ejecutá: ./install.sh systutor"
@@ -122,6 +126,8 @@ Comandos:
                          Instalar systutor-core + systutor-shell
   add [install|update|list|skills] [RUTA]
                          Instalar Atomic-Driven-Development (ADD)
+  start [setup|up] [--web-dir DIR] [RUTA]
+                         Configurar scripts npm y arrancar servicios
   tools [--profile NAME] [--list] [--only tool...]
                          Instalar herramientas de desarrollo
   dotfiles [install|update|list]
@@ -146,7 +152,10 @@ Ejemplos:
   ./install.sh tools --only docker git      # instala solo docker y git
   ./install.sh systutor /mi/proyecto        # monta systutor en un repo
   ./install.sh add /mi/proyecto             # clona ADD en un repo
-  ./install.sh add skills                   # ver skills disponibles
+  ./install.sh start setup                  # agrega scripts npm (frontend/services/dev)
+  ./install.sh start up                     # arranca frontend + backend
+  ./install.sh start up --frontend          # arranca solo frontend
+  ./install.sh start up --backend           # arranca solo backend
   ./install.sh dotfiles update              # actualiza dotfiles
   ./install.sh diag                         # ver entorno actual
 
@@ -189,6 +198,7 @@ main() {
   case "$cmd" in
     systutor)  cmd_systutor "${cmd_args[@]}" ;;
     add)       cmd_add "${cmd_args[@]}" ;;
+    start)     cmd_start "${cmd_args[@]}" ;;
     tools)     cmd_tools "${cmd_args[@]}" ;;
     dotfiles)  cmd_dotfiles "${cmd_args[@]}" ;;
     all)       cmd_all "${cmd_args[@]}" ;;
