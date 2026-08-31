@@ -91,12 +91,12 @@ pkg_install() {
   local pm
   pm="$(detect_pkg_manager)"
   case "$pm" in
-    apt)    run sudo apt-get install -y "$@" ;;
-    dnf)    run sudo dnf install -y "$@" ;;
-    pacman) run sudo pacman -S --noconfirm "$@" ;;
-    apk)    run sudo apk add "$@" ;;
-    pkg)    run pkg install -y "$@" ;;
-    brew)   run brew install "$@" ;;
+    apt)    run sudo apt-get install -y "$@" || return 1 ;;
+    dnf)    run sudo dnf install -y "$@" || return 1 ;;
+    pacman) run sudo pacman -S --noconfirm "$@" || return 1 ;;
+    apk)    run sudo apk add "$@" || return 1 ;;
+    pkg)    run pkg install -y "$@" || return 1 ;;
+    brew)   run brew install "$@" || return 1 ;;
     *)      warn "No se detectó gestor de paquetes — instala manualmente: $*"; return 1 ;;
   esac
 }

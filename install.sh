@@ -88,6 +88,7 @@ cmd_diag() {
 cmd_all() {
   step "Instalación completa"
 
+  set +e
   cmd_tools "$@"
   cmd_dotfiles install
 
@@ -99,6 +100,7 @@ cmd_all() {
     warn "No estás en un repo git — omitiendo systutor y add"
     info "  Entrá a tu proyecto y ejecutá: ./install.sh systutor"
   fi
+  set -e
 
   echo ""
   ok "¡Instalación completa!"

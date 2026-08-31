@@ -43,10 +43,11 @@ cmd_tools() {
 
   # Actualizar repos de paquetes
   log "actualizando repositorios de paquetes..."
-  pkg_update 2>/dev/null || true
+  (set +e; pkg_update 2>/dev/null) || true
 
-  # Instalar cada tool
+  # Instalar cada tool (set +e para no matar el script en el primer error)
   local installed=0 failed=0 skipped=0
+  set +e
   for tool in "${tools_to_install[@]}"; do
     if have "$tool"; then
       info "  ✓ $tool ($(command -v "$tool"))"
@@ -62,6 +63,7 @@ cmd_tools() {
       fi
     fi
   done
+  set -e
 
   echo ""
   ok "Tools: $installed instalados, $skipped ya existían, $failed fallaron"
