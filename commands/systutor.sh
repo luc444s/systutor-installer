@@ -40,10 +40,16 @@ _systutor_core() {
 
   log "pip install -e $CORE_PATH"
   if [ "$DRY_RUN" = 0 ]; then
-    if have pip3; then pip3 install -e "$CORE_PATH"
-    elif have pip; then pip install -e "$CORE_PATH"
-    else warn "pip no encontrado — instala el kernel manualmente"
+    # Crear venv si no existe (requerido en macOS/Homebrew y sysaptops modernos)
+    if [ ! -d ".venv" ]; then
+      log "creando .venv..."
+      python3 -m venv .venv
     fi
+    # Activar venv e instalar
+    # shellcheck disable=SC1091
+    . .venv/bin/activate
+    pip install -e "$CORE_PATH"
+    ok "kernel instalado en .venv (activá con: source .venv/bin/activate)"
   fi
 }
 
