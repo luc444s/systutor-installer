@@ -9,7 +9,7 @@ CLI para instalar tu set de programación completo: herramientas de desarrollo, 
 ```bash
 git clone https://github.com/luc444s/systutor-installer.git
 cd systutor-installer
-bash install.sh all          # instala todo
+bash install.sh all          # instala todo (perfil full) en el directorio padre
 ```
 
 ## Comandos
@@ -62,7 +62,7 @@ Qué hace:
 Dentro de un repo git:
 
 ```bash
-./install.sh add install   # clona ADD en vendor/
+./install.sh add install   # clona ADD en la raíz del proyecto
 ./install.sh add update    # actualiza ADD
 ./install.sh add skills    # lista skills disponibles
 ./install.sh add list      # ver skills

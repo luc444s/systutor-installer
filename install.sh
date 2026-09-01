@@ -19,6 +19,7 @@ set -euo pipefail
 
 # ── Resolver ruta del script (funciona con symlinks) ────────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+INSTALL_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # ── Cargar librerías ────────────────────────────────────────────────────────
 # shellcheck source=lib/common.sh
@@ -91,18 +92,53 @@ cmd_diag() {
 cmd_all() {
   step "Instalación completa"
 
+  local target="$INSTALL_ROOT"
+  local systutor_args=()
+  local add_args=()
+  local start_args=()
+
+  while [ $# -gt 0 ]; do
+    case "$1" in
+      --core|--shell|--no-dashboard)
+        systutor_args+=("$1")
+        shift
+        ;;
+      --web-dir)
+        systutor_args+=("$1" "$2")
+        start_args+=("$1" "$2")
+        shift 2
+        ;;
+      y|yes|Y|YES|n|no|N|NO)
+        shift
+        ;;
+      -*)
+        systutor_args+=("$1")
+        shift
+        ;;
+      *)
+        if [ "$target" = "$INSTALL_ROOT" ]; then
+          target="$1"
+          systutor_args+=("$1")
+          add_args+=("$1")
+          start_args+=("$1")
+        fi
+        shift
+        ;;
+    esac
+  done
+
   set +e
-  cmd_tools "$@"
+  cmd_tools --profile full
   cmd_dotfiles install
 
-  # systutor + add + start solo si estamos en un repo git
-  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    cmd_systutor "$@"
-    cmd_add install
-    cmd_start setup
+  # systutor + add + start solo si el destino es un repo git
+  if git -C "$target" rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    cmd_systutor "${systutor_args[@]}"
+    cmd_add install "${add_args[@]}"
+    cmd_start setup "${start_args[@]}"
   else
-    warn "No estás en un repo git — omitiendo systutor y add"
-    info "  Entrá a tu proyecto y ejecutá: ./install.sh systutor"
+    warn "$target no es un repo git — omitiendo systutor y add"
+    info "  Pasá una ruta explícita si quieres instalar sobre otro proyecto"
   fi
   set -e
 
@@ -132,7 +168,7 @@ Comandos:
                          Instalar herramientas de desarrollo
   dotfiles [install|update|list]
                          Instalar/actualizar configuraciones de shell
-  all [opciones]         Instalar todo (tools + dotfiles + systutor + add)
+  all [opciones]         Instalar todo (tools full + dotfiles + systutor + add)
   diag                   Diagnóstico del entorno
 
 Opciones globales:
@@ -147,7 +183,7 @@ Perfiles (para tools):
   minimal    Solo Git, Python, Node, curl
 
 Ejemplos:
-  ./install.sh all                          # instala todo
+  ./install.sh all                          # instala todo en el directorio padre
   ./install.sh tools --profile full         # instala tools full
   ./install.sh tools --only docker git      # instala solo docker y git
   ./install.sh systutor /mi/proyecto        # monta systutor en un repo

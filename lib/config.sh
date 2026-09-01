@@ -14,7 +14,7 @@ CORE_PATH="vendor/systutor-core"
 SHELL_PATH="vendor/systutor-shell"
 THEMES_PATH="vendor/systutor-themes"
 DOTFILES_PATH="/tmp/systutor-dotfiles"
-ADD_PATH="vendor/atomic-driven-development"
+ADD_PATH="ADD"
 
 # ── Defaults ─────────────────────────────────────────────────────────────────
 WEB_DIR="apps/web"

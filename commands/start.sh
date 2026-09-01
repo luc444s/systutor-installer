@@ -36,7 +36,7 @@ cmd_start() {
 }
 
 _start_setup() {
-  local target="."
+  local target="${INSTALL_ROOT:-.}"
 
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -83,7 +83,7 @@ PKGJSON
 }
 
 _start_up() {
-  local target="."
+  local target="${INSTALL_ROOT:-.}"
 
   while [ $# -gt 0 ]; do
     case "$1" in

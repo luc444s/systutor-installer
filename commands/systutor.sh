@@ -2,7 +2,7 @@
 # commands/systutor.sh — instala systutor: dashboard + vendor + deps
 
 cmd_systutor() {
-  local target="."
+  local target="${INSTALL_ROOT:-.}"
 
   while [ $# -gt 0 ]; do
     case "$1" in

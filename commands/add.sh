@@ -15,7 +15,7 @@ cmd_add() {
 }
 
 _add_install() {
-  local target="."
+  local target="${INSTALL_ROOT:-.}"
 
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -32,7 +32,7 @@ _add_install() {
   cd "$target" || return 1
 
   # Determinar destino
-  local dest="vendor/atomic-driven-development"
+  local dest="ADD"
   if [ -d "$dest" ]; then
     log "ADD ya existe en $dest — ejecutá: ./install.sh add update"
     return 0
@@ -53,7 +53,7 @@ _add_install() {
 }
 
 _add_update() {
-  local target="."
+  local target="${INSTALL_ROOT:-.}"
 
   while [ $# -gt 0 ]; do
     case "$1" in
@@ -64,7 +64,7 @@ _add_update() {
   step "ADD — actualizando"
 
   cd "$target" || return 1
-  local dest="vendor/atomic-driven-development"
+  local dest="ADD"
 
   if [ ! -d "$dest" ]; then
     die "ADD no instalado — ejecutá: ./install.sh add install"
@@ -81,7 +81,7 @@ _add_list() {
 
   # Buscar en ubicaciones conocidas
   local add_dir=""
-  for candidate in "vendor/atomic-driven-development" "../atomic-driven-development" "$ADD_PATH"; do
+  for candidate in "ADD" "../ADD" "$ADD_PATH"; do
     if [ -d "$candidate/skills" ]; then
       add_dir="$candidate"
       break
