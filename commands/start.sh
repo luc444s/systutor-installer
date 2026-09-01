@@ -67,9 +67,9 @@ PKGJSON
   fi
 
   # Agregar scripts al package.json raíz
-  _add_npm_script "$root_pkg" "frontend" "cd $WEB_DIR && npm run dev"
-  _add_npm_script "$root_pkg" "services" "cd vendor/systutor-core && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000"
-  _add_npm_script "$root_pkg" "db" "cd vendor/systutor-core && alembic upgrade head"
+  _add_npm_script "$root_pkg" "frontend" "sh -c 'if [ ! -f $WEB_DIR/node_modules/vite/bin/vite.js ] || [ ! -f $WEB_DIR/node_modules/typescript/bin/tsc ]; then npm --prefix $WEB_DIR install --no-audit --no-fund || exit 1; fi; cd $WEB_DIR && npm run dev'"
+  _add_npm_script "$root_pkg" "services" "sh -c 'if [ -f .venv/bin/activate ]; then . .venv/bin/activate; fi; cd vendor/systutor-core && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000'"
+  _add_npm_script "$root_pkg" "db" "bash scripts/systutor-db.sh"
   _add_npm_script "$root_pkg" "dev" "npm run services & npm run frontend"
   _add_npm_script "$root_pkg" "typecheck" "cd $WEB_DIR && npx tsc --noEmit"
 
